@@ -3,9 +3,7 @@ import {
   BookOpen, 
   FolderKanban, 
   FileText,
-  Star,
-  PanelLeftClose,
-  PanelLeftOpen
+  Star
 } from 'lucide-react';
 interface SidebarProps {
   currentTab: 'biblioteca' | 'favoritas' | 'projetos' | 'documentos';
@@ -15,14 +13,12 @@ interface SidebarProps {
   projetosCount?: number;
   riscoCount?: number;
   isCollapsed?: boolean;
-  onToggleCollapse?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   currentTab,
   onSelectTab,
   isCollapsed = false,
-  onToggleCollapse,
 }) => {
   const navItems: { id: 'biblioteca' | 'favoritas' | 'projetos' | 'documentos'; label: string; icon: React.ElementType; badge?: string }[] = [
     {
@@ -71,22 +67,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
         </div>
 
-        {/* Toggle Collapse Button */}
-        {onToggleCollapse && (
-          <button
-            type="button"
-            onClick={onToggleCollapse}
-            title={isCollapsed ? 'Expandir menu lateral' : 'Recolher menu lateral'}
-            aria-label={isCollapsed ? 'Expandir menu lateral' : 'Recolher menu lateral'}
-            className="min-w-[44px] min-h-[44px] rounded-xl flex items-center justify-center text-text-muted hover:text-primary-text hover:bg-surface-hover transition-colors cursor-pointer shrink-0"
-          >
-            {isCollapsed ? (
-              <PanelLeftOpen className="w-5 h-5" aria-hidden="true" />
-            ) : (
-              <PanelLeftClose className="w-5 h-5" aria-hidden="true" />
-            )}
-          </button>
-        )}
       </div>
 
       {/* Main Navigation */}

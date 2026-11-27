@@ -539,7 +539,6 @@ export default function App() {
         projetosCount={projetos.length}
         riscoCount={riscoCount}
         isCollapsed={isSidebarCollapsed}
-        onToggleCollapse={handleToggleSidebar}
       />
 
       {/* Main View Area */}
