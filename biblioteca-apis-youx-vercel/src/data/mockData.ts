@@ -13,7 +13,7 @@ export const APIS_MOCK: ApiItem[] = [
     dificuldade: 'Burocrática',
     dificuldadeMotivo: 'Exige Acordo de Cooperação Técnica (ACT) formalizado, publicação no DOU e certificado e-CNPJ.',
     verificadoEm: '14/10/2026',
-    verificadoPor: 'Tainara Souza (PO YouX)',
+    verificadoPor: 'Equipe YouX',
     visaoGeral: {
       oQueFaz: 'Verifica se um imóvel rural está medido e certificado pelo Incra, indicando se a poligonal invade terras indígenas, unidades de conservação, assentamentos ou imóveis vizinhos.',
       dadosEntrada: [
@@ -96,15 +96,15 @@ export const APIS_MOCK: ApiItem[] = [
     macetes: [
       {
         id: 'm1',
-        autor: 'Lucas Mendes',
-        cargo: 'Tech Lead',
+        autor: 'Equipe técnica',
+        cargo: 'Equipe técnica',
         data: '18/09/2026',
         conteudo: 'O gateway do Incra rejeita qualquer chamada sem o cabeçalho X-Source-Agency com a sigla oficial cadastrada no ACT. Não esqueça de mapear essa variável de ambiente.'
       },
       {
         id: 'm2',
-        autor: 'Mariana Dias',
-        cargo: 'Desenvolvedora Backend',
+        autor: 'Equipe de integração',
+        cargo: 'Equipe de integração',
         data: '03/10/2026',
         conteudo: 'A homologação do SIGEF fica fora do ar toda terça-feira das 06h às 10h para rotina de sincronização cadastral. Se fizer testes nesse período, você receberá erro 503.'
       }
@@ -113,13 +113,13 @@ export const APIS_MOCK: ApiItem[] = [
       {
         id: 'h1',
         data: '14/10/2026',
-        responsavel: 'Tainara Souza (PO)',
+        responsavel: 'Equipe YouX',
         descricao: 'Atualizado requisito de mTLS e migração oficial dos endpoints legados para a rota v2 unificada.'
       },
       {
         id: 'h2',
         data: '22/07/2026',
-        responsavel: 'Lucas Mendes (Tech Lead)',
+        responsavel: 'Equipe técnica',
         descricao: 'Validação da rota de busca espacial por bounding box (BBOX).'
       }
     ]
@@ -136,7 +136,7 @@ export const APIS_MOCK: ApiItem[] = [
     dificuldade: 'Fácil',
     dificuldadeMotivo: 'Disponível no catálogo padrão do Conecta gov.br com adesão facilitada.',
     verificadoEm: '20/10/2026',
-    verificadoPor: 'Rodrigo Calheiros (PO YouX)',
+    verificadoPor: 'Equipe YouX',
     visaoGeral: {
       oQueFaz: 'Recebe o CPF e a data de nascimento e devolve se a pessoa física está Regular, Suspensa, Cancelada ou Falecida na Receita Federal, com o nome oficial grafado sem erros de digitação.',
       dadosEntrada: [
@@ -202,8 +202,8 @@ export const APIS_MOCK: ApiItem[] = [
     macetes: [
       {
         id: 'm-cpf-1',
-        autor: 'Felipe Rocha',
-        cargo: 'PO',
+        autor: 'Equipe de integração',
+        cargo: 'Equipe YouX',
         data: '15/09/2026',
         conteudo: 'A API rejeita CPF com pontuação. Sempre aplique um sanitize simples no frontend (cpf.replace(/\\D/g, "")) antes do envio ao backend.'
       }
@@ -212,7 +212,7 @@ export const APIS_MOCK: ApiItem[] = [
       {
         id: 'h-cpf-1',
         data: '20/10/2026',
-        responsavel: 'Rodrigo Calheiros (PO)',
+        responsavel: 'Equipe YouX',
         descricao: 'Verificada estabilidade da cota de 100 requisições/segundo em ambiente de teste.'
       }
     ]
@@ -229,7 +229,7 @@ export const APIS_MOCK: ApiItem[] = [
     dificuldade: 'Média',
     dificuldadeMotivo: 'Requer aprovação do FSI (Formulário de Solicitação de Integração) pela equipe do MGI e configuração OpenID Connect.',
     verificadoEm: '18/10/2026',
-    verificadoPor: 'Tainara Souza (PO YouX)',
+    verificadoPor: 'Equipe YouX',
     visaoGeral: {
       oQueFaz: 'Permite que o cidadão ou produtor rural faça login no sistema com a mesma senha do gov.br. Retorna o CPF, nome civil, e-mail verificado e o nível da conta (Bronze, Prata ou Ouro).',
       dadosEntrada: [
@@ -307,15 +307,15 @@ export const APIS_MOCK: ApiItem[] = [
     macetes: [
       {
         id: 'm-login-1',
-        autor: 'André Matos',
-        cargo: 'Arquiteto de Software',
+        autor: 'Equipe técnica',
+        cargo: 'Equipe técnica',
         data: '28/09/2026',
         conteudo: 'No ambiente de testes (sso.staging), você NÃO pode usar seu CPF real! Use sempre a planilha de CPFs fictícios do manual oficial do MGI (iniciados com 999.xxx).'
       },
       {
         id: 'm-login-2',
-        autor: 'Tainara Souza',
-        cargo: 'PO YouX',
+        autor: 'Equipe YouX',
+        cargo: 'Equipe YouX',
         data: '18/10/2026',
         conteudo: 'Adicione na tela de boas-vindas do sistema um aviso visual explicando a diferença de conta Bronze para Prata/Ouro. Isso reduz pela metade os chamados de suporte.'
       }
@@ -324,7 +324,7 @@ export const APIS_MOCK: ApiItem[] = [
       {
         id: 'h-login-1',
         data: '18/10/2026',
-        responsavel: 'Tainara Souza (PO)',
+        responsavel: 'Equipe YouX',
         descricao: 'Homologado suporte a PKCE obrigatório conforme nova diretriz de segurança MGI 2026.'
       }
     ]
@@ -341,7 +341,7 @@ export const APIS_MOCK: ApiItem[] = [
     dificuldade: 'Burocrática',
     dificuldadeMotivo: 'Depende de Login gov.br ativo, conta nível Prata ou Ouro do usuário e adesão ao Decreto 10.543/2020.',
     verificadoEm: '22/10/2026',
-    verificadoPor: 'Tainara Souza (PO YouX)',
+    verificadoPor: 'Equipe YouX',
     visaoGeral: {
       oQueFaz: 'Permite ao cidadão assinar digitalmente termos de adesão, contratos e laudos do projeto público com força jurídica garantida por lei federal, sem precisar comprar certificado ICP-Brasil pago.',
       dadosEntrada: [
@@ -420,15 +420,15 @@ export const APIS_MOCK: ApiItem[] = [
     macetes: [
       {
         id: 'm-ass-1',
-        autor: 'Lucas Mendes',
-        cargo: 'Tech Lead',
+        autor: 'Equipe técnica',
+        cargo: 'Equipe técnica',
         data: '05/10/2026',
         conteudo: 'Nunca envie o arquivo PDF inteiro pela API! Calcule o hash SHA-256 do documento no backend e envie apenas os 64 caracteres hexadecimais. É 100x mais rápido e evita timeout de 30s.'
       },
       {
         id: 'm-ass-2',
-        autor: 'Tainara Souza',
-        cargo: 'PO YouX',
+        autor: 'Equipe YouX',
+        cargo: 'Equipe YouX',
         data: '19/10/2026',
         conteudo: 'Coloque um validador preventivo de nível de conta logo no início do fluxo. Se o cidadão for Bronze, mostre o botão "Subir nível no gov.br via biometria ou banco" antes de abrir o termo.'
       }
@@ -437,7 +437,7 @@ export const APIS_MOCK: ApiItem[] = [
       {
         id: 'h-ass-1',
         data: '22/10/2026',
-        responsavel: 'Tainara Souza (PO)',
+        responsavel: 'Equipe YouX',
         descricao: 'Revisão das regras de carimbo do tempo conforme resolução mais recente do Comitê Gestor da ICP-Brasil.'
       }
     ]
@@ -454,7 +454,7 @@ export const APIS_MOCK: ApiItem[] = [
     dificuldade: 'Burocrática',
     dificuldadeMotivo: 'Dados espaciais sensíveis de conformidade ambiental com aprovação pelo Serviço Florestal.',
     verificadoEm: '12/10/2026',
-    verificadoPor: 'Camila Siqueira (PO YouX)',
+    verificadoPor: 'Equipe de integração',
     visaoGeral: {
       oQueFaz: 'A partir do número de recibo do CAR estadual ou federal, a API retorna a situação do cadastro (Ativo, Pendente, Suspenso), o tamanho da Reserva Legal declarada, Área de Preservação Permanente (APP) e o arquivo vetorial georreferenciado da propriedade.',
       dadosEntrada: [
@@ -529,8 +529,8 @@ export const APIS_MOCK: ApiItem[] = [
     macetes: [
       {
         id: 'm-sicar-1',
-        autor: 'Bruno Fontes',
-        cargo: 'Desenvolvedor Frontend',
+        autor: 'Equipe de integração',
+        cargo: 'Equipe de integração',
         data: '01/10/2026',
         conteudo: 'Atenção com sistemas de coordenadas: a API do SICAR devolve em SIRGAS 2000 (EPSG:4674). Se você renderizar no Mapbox/Leaflet sem reprojetar para WGS84 Web Mercator (EPSG:3857), o polígono vai parar no meio do oceano!'
       }
@@ -539,7 +539,7 @@ export const APIS_MOCK: ApiItem[] = [
       {
         id: 'h-sicar-1',
         data: '12/10/2026',
-        responsavel: 'Camila Siqueira (PO)',
+        responsavel: 'Equipe de integração',
         descricao: 'Homologação da nova rota GeoJSON unificada do CAR federal.'
       }
     ]
@@ -556,7 +556,7 @@ export const APIS_MOCK: ApiItem[] = [
     dificuldade: 'Burocrática',
     dificuldadeMotivo: 'Sistema legado fora do Conecta gov com trâmite via barramento próprio do Incra.',
     verificadoEm: '08/10/2026',
-    verificadoPor: 'Tainara Souza (PO YouX)',
+    verificadoPor: 'Equipe YouX',
     visaoGeral: {
       oQueFaz: 'Consulta o código SNCR de 13 dígitos de uma propriedade rural para atestar sua titularidade jurídica, módulo fiscal municipal, fração mínima de parcelamento e quitação da taxa cadastral do CCIR.',
       dadosEntrada: [
@@ -623,8 +623,8 @@ export const APIS_MOCK: ApiItem[] = [
     macetes: [
       {
         id: 'm-sncr-1',
-        autor: 'Lucas Mendes',
-        cargo: 'Tech Lead',
+        autor: 'Equipe técnica',
+        cargo: 'Equipe técnica',
         data: '14/09/2026',
         conteudo: 'Nunca envie pontos ou traços no código SNCR. Envie a string estritamente limpa com 13 caracteres numéricos, caso contrário o mainframe do Serpro retorna código de erro genérico sem descrição.'
       }
@@ -633,7 +633,7 @@ export const APIS_MOCK: ApiItem[] = [
       {
         id: 'h-sncr-1',
         data: '08/10/2026',
-        responsavel: 'Tainara Souza (PO)',
+        responsavel: 'Equipe YouX',
         descricao: 'Validação da estrutura de resposta para CCIR eletrônico digital.'
       }
     ]
@@ -650,7 +650,7 @@ export const APIS_MOCK: ApiItem[] = [
     dificuldade: 'Fácil',
     dificuldadeMotivo: 'Integração ágil via Conecta gov.br ou APIs públicas credenciadas pela Receita.',
     verificadoEm: '24/10/2026',
-    verificadoPor: 'Rodrigo Calheiros (PO YouX)',
+    verificadoPor: 'Equipe YouX',
     visaoGeral: {
       oQueFaz: 'Recebe o CNPJ de 14 dígitos e retorna a Razão Social oficial, Nome Fantasia, CNAE principal e secundários, endereço oficial e o Quadro de Sócios e Administradores (QSA).',
       dadosEntrada: [
@@ -710,8 +710,8 @@ export const APIS_MOCK: ApiItem[] = [
     macetes: [
       {
         id: 'm-cnpj-1',
-        autor: 'Camila Siqueira',
-        cargo: 'PO YouX',
+        autor: 'Equipe de integração',
+        cargo: 'Equipe YouX',
         data: '10/10/2026',
         conteudo: 'Para associações de agricultura familiar, sempre confira a data da última ata de eleição registrada no QSA. Muitas associações operam com mandatos de diretoria vencidos.'
       }
@@ -720,7 +720,7 @@ export const APIS_MOCK: ApiItem[] = [
       {
         id: 'h-cnpj-1',
         data: '24/10/2026',
-        responsavel: 'Rodrigo Calheiros (PO)',
+        responsavel: 'Equipe YouX',
         descricao: 'Verificado suporte a detalhamento do CNAE agrícola 2026.'
       }
     ]
@@ -737,7 +737,7 @@ export const APIS_MOCK: ApiItem[] = [
     dificuldade: 'Fácil',
     dificuldadeMotivo: 'API aberta e de rápida implementação técnica com cache simples.',
     verificadoEm: '25/10/2026',
-    verificadoPor: 'Tainara Souza (PO YouX)',
+    verificadoPor: 'Equipe YouX',
     visaoGeral: {
       oQueFaz: 'Quando o usuário digita o CEP de 8 dígitos, a API preenche automaticamente a rua, bairro, município e estado, além do código IBGE do município.',
       dadosEntrada: [
@@ -795,8 +795,8 @@ export const APIS_MOCK: ApiItem[] = [
     macetes: [
       {
         id: 'm-cep-1',
-        autor: 'Tainara Souza',
-        cargo: 'PO YouX',
+        autor: 'Equipe YouX',
+        cargo: 'Equipe YouX',
         data: '05/10/2026',
         conteudo: 'Em projetos rurais, cerca de 40% dos municípios têm CEP único com logradouro em branco. Se o formulário travar os campos de texto como "somente leitura" no autopreenchimento, o produtor não conseguirá completar o cadastro!'
       }
@@ -805,7 +805,7 @@ export const APIS_MOCK: ApiItem[] = [
       {
         id: 'h-cep-1',
         data: '25/10/2026',
-        responsavel: 'Tainara Souza (PO)',
+        responsavel: 'Equipe YouX',
         descricao: 'Sincronizada base de tabelas do IBGE 2026.'
       }
     ]
@@ -819,7 +819,7 @@ export const PROJETOS_MOCK: Projeto[] = [
     sigla: 'PSA',
     cliente: 'Secretaria Estadual de Meio Ambiente e Recursos Hídricos (SEMARH)',
     descricao: 'Plataforma estadual de adesão, habilitação fundiária, monitoramento satelital e remuneração financeira de produtores rurais que conservam nascentes e áreas de Reserva Legal.',
-    responsavel: 'Tainara Souza (PO YouX)',
+    responsavel: 'Equipe YouX',
     sprints: [
       { id: 1, nome: 'Sprint 1', dataInicio: '2026-11-03', dataFim: '2026-11-16', meta: 'Cadastro inicial do produtor e endereço' },
       { id: 2, nome: 'Sprint 2', dataInicio: '2026-11-17', dataFim: '2026-11-30', meta: 'Login unificado do cidadão e perfil gov.br' },
@@ -839,7 +839,7 @@ export const PROJETOS_MOCK: Projeto[] = [
         prazoMaxDias: 3,
         dataLimiteSolicitacao: '2026-10-26', // Calculada: início 03/11 - 3 dias úteis - 5 folga
         status: 'Produção',
-        responsavel: 'Mariana Dias (Dev)',
+        responsavel: 'Equipe de integração',
         risco: 'verde',
         riscoMotivo: 'API homologada e em produção no ambiente de teste e desenvolvimento.'
       },
@@ -854,7 +854,7 @@ export const PROJETOS_MOCK: Projeto[] = [
         prazoMaxDias: 14,
         dataLimiteSolicitacao: '2026-10-15',
         status: 'Homologação',
-        responsavel: 'Rodrigo Calheiros (PO)',
+        responsavel: 'Equipe YouX',
         risco: 'verde',
         riscoMotivo: 'Chaves de teste recebidas e validadas no gateway; aguardando virada para produção na Sprint 1.'
       },
@@ -869,7 +869,7 @@ export const PROJETOS_MOCK: Projeto[] = [
         prazoMaxDias: 28,
         dataLimiteSolicitacao: '2026-10-15',
         status: 'Em solicitação',
-        responsavel: 'Tainara Souza (PO)',
+        responsavel: 'Equipe YouX',
         risco: 'amarelo',
         riscoMotivo: 'FSI submetido ao MGI; previsão de entrega de credenciais de teste em 05/11. No limite da margem de segurança.'
       },
@@ -884,7 +884,7 @@ export const PROJETOS_MOCK: Projeto[] = [
         prazoMaxDias: 60,
         dataLimiteSolicitacao: '2026-09-27', // Ultrapassada!
         status: 'Em solicitação',
-        responsavel: 'Camila Siqueira (PO)',
+        responsavel: 'Equipe de integração',
         risco: 'vermelho',
         riscoMotivo: 'Atraso crítico: data-limite de solicitação estourada em 29 dias e ofício ainda aguarda despacho no Ministério!'
       },
@@ -900,7 +900,7 @@ export const PROJETOS_MOCK: Projeto[] = [
         dataLimiteSolicitacao: '2026-10-15', // Ultrapassada!
         status: 'Não solicitada',
         dependeDeApiId: 'login-gov',
-        responsavel: 'Tainara Souza (PO)',
+        responsavel: 'Equipe YouX',
         risco: 'vermelho',
         riscoMotivo: 'Urgência máxima: depende da aprovação do Login gov.br (Sprint 2) para ser solicitada, e o prazo máximo é de até 40 dias úteis!'
       },
@@ -915,7 +915,7 @@ export const PROJETOS_MOCK: Projeto[] = [
         prazoMaxDias: 80,
         dataLimiteSolicitacao: '2026-10-12', // Ultrapassada para início em 05/01/2027
         status: 'Não solicitada',
-        responsavel: 'Lucas Mendes (Tech Lead)',
+        responsavel: 'Equipe técnica',
         risco: 'amarelo',
         riscoMotivo: 'Minuta de ofício pronta para coleta de assinatura do Secretário. Risco de impactar a Sprint 5 se não protocolado esta semana.'
       }
@@ -927,7 +927,7 @@ export const PROJETOS_MOCK: Projeto[] = [
     sigla: 'PRA',
     cliente: 'Instituto de Terras e Meio Ambiente (ITERRA)',
     descricao: 'Sistema estadual de conciliação de passivos de Reserva Legal e compensação de áreas desmatadas.',
-    responsavel: 'Rodrigo Calheiros (PO YouX)',
+    responsavel: 'Equipe YouX',
     sprints: [
       { id: 1, nome: 'Sprint 1', dataInicio: '2026-11-10', dataFim: '2026-11-23', meta: 'Estruturação de cadastro' },
       { id: 2, nome: 'Sprint 2', dataInicio: '2026-11-24', dataFim: '2026-12-07', meta: 'Mapeamento ambiental' }
@@ -944,7 +944,7 @@ export const PROJETOS_MOCK: Projeto[] = [
         prazoMaxDias: 10,
         dataLimiteSolicitacao: '2026-10-26',
         status: 'Homologação',
-        responsavel: 'Rodrigo Calheiros (PO)',
+        responsavel: 'Equipe YouX',
         risco: 'verde',
         riscoMotivo: 'API no prazo e já em fase final de homologação.'
       }
@@ -1083,7 +1083,7 @@ ${secoesApis}
 
 --------------------------------------------------------------------------------
 OBSERVAÇÕES TÉCNICAS COMPLEMENTARES:
-${dados.observacoesTecnicas || 'Nenhuma observação complementar registrada. Em caso de dúvidas sobre credenciais, contatar a PO Tainara Souza via canal interno de integrações.'}
+${dados.observacoesTecnicas || 'Nenhuma observação complementar registrada. Em caso de dúvidas sobre credenciais, consulte a documentação técnica da API.'}
 --------------------------------------------------------------------------------
 `;
     }

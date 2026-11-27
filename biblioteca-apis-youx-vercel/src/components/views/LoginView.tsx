@@ -30,8 +30,8 @@ export const LoginView: React.FC<LoginViewProps> = ({
   onToggleDarkMode,
 }) => {
   const [mode, setMode] = useState<'login' | 'signup' | 'forgot'>('login');
-  const [email, setEmail] = useState('tainara.souza@youxgroup.com.br');
-  const [password, setPassword] = useState('govtech2026');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [department, setDepartment] = useState('Squad GovTech');
   const [showPassword, setShowPassword] = useState(false);
@@ -73,7 +73,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
 
       if (foundUser) {
         setIsLoading(false);
-        onLogin(foundUser);
+        onLogin(foundUser, foundUser.isAdmin === true);
       } else {
         const namePart = (mode === 'signup' && name.trim()) 
           ? name.trim() 
@@ -88,8 +88,8 @@ export const LoginView: React.FC<LoginViewProps> = ({
           id: `user-${Date.now()}`,
           name: namePart.charAt(0).toUpperCase() + namePart.slice(1),
           email: email.trim(),
-          role: mode === 'signup' ? 'Desenvolvedor' : 'Product Owner',
-          cargoDetalhado: 'Especialista em Integrações e Setor Público',
+          role: 'Usuário',
+          cargoDetalhado: 'Perfil de acesso padrão',
           avatarInitials: initials,
           department: department || 'Tecnologia do Setor Público'
         };
@@ -274,7 +274,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="Ex.: Lucas Mendes"
+                      placeholder="Ex.: Nome Sobrenome"
                       className="w-full min-h-[48px] px-4 py-3 bg-surface border border-border-default rounded-xl text-base text-main placeholder-muted focus-visible:outline-2 focus-visible:outline-focus-ring transition-all"
                     />
                   </div>

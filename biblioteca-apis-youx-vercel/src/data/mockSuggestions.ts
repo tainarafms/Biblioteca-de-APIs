@@ -22,7 +22,7 @@ export const INITIAL_SUGGESTIONS: ApiSuggestion[] = [
     temSandbox: true,
     preRequisitos: 'Adesão formal ao Conecta gov.br com plano básico de interoperabilidade.',
     status: 'pendente',
-    sugeridoPor: 'Mariana Dias',
+    sugeridoPor: 'Usuário',
     sugeridoPorEmail: 'mariana.dias@youxgroup.com.br',
     sugeridoPorCargo: 'Desenvolvedora Full-Stack',
     dataCriacao: '02/11/2026, 14:20'
@@ -48,9 +48,9 @@ export const INITIAL_SUGGESTIONS: ApiSuggestion[] = [
     temSandbox: false,
     preRequisitos: 'Publicação de portaria conjunta SEFAZ/SEMA em Diário Oficial do Estado e assinatura de termo de sigilo fiscal.',
     status: 'pendente',
-    sugeridoPor: 'Rodrigo Calheiros',
+    sugeridoPor: 'Usuário',
     sugeridoPorEmail: 'rodrigo.calheiros@youxgroup.com.br',
-    sugeridoPorCargo: 'Product Owner',
+    sugeridoPorCargo: 'Perfil de acesso',
     dataCriacao: '03/11/2026, 10:15'
   },
   {
@@ -74,11 +74,11 @@ export const INITIAL_SUGGESTIONS: ApiSuggestion[] = [
     temSandbox: true,
     preRequisitos: 'Contratação Conecta gov.br ou crédito pré-pago Serpro.',
     status: 'aprovada',
-    sugeridoPor: 'Mariana Dias',
+    sugeridoPor: 'Usuário',
     sugeridoPorEmail: 'mariana.dias@youxgroup.com.br',
     sugeridoPorCargo: 'Desenvolvedora Full-Stack',
     dataCriacao: '20/10/2026, 09:30',
-    avaliadoPor: 'Tainara Souza (PO YouX)',
+    avaliadoPor: 'Administrador',
     dataAvaliacao: '28/10/2026, 11:30',
     apiCadastradaId: 'cpf-luz'
   }

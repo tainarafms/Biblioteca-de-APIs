@@ -82,8 +82,8 @@ export const DocumentGeneratorView: React.FC<DocumentGeneratorViewProps> = ({
 
   // Editable fields before exporting
   const [orgaoDestinatario, setOrgaoDestinatario] = useState('Secretaria de Governo Digital — MGI / Presidência do INCRA');
-  const [gestorNome, setGestorNome] = useState('Tainara Souza');
-  const [gestorCargo, setGestorCargo] = useState('Product Owner / Líder de Integrações GovTech');
+  const [gestorNome, setGestorNome] = useState('');
+  const [gestorCargo, setGestorCargo] = useState('');
   const [orgaoClienteNome, setOrgaoClienteNome] = useState(projeto.cliente);
   const [projetoNome, setProjetoNome] = useState(projeto.nome);
   const [justificativa, setJustificativa] = useState(

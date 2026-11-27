@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { BookOpen, FolderPlus, Layers3, NotebookPen, Plus, Trash2, X } from 'lucide-react';
+import { BookOpen, ClipboardCopy, FolderPlus, Layers3, NotebookPen, Pencil, Plus, Trash2, X } from 'lucide-react';
 import { ApiItem } from '../../types';
 
-type Etapa = { id: string; apiId: string };
+type Etapa = { id: string; apiId: string; observacao?: string };
 type Pasta = { id: string; nome: string; observacoes: string; etapas: Etapa[] };
 
 interface ProjectsWorkspaceViewProps {
@@ -25,6 +25,9 @@ export const ProjectsWorkspaceView: React.FC<ProjectsWorkspaceViewProps> = ({ ap
   const [pastaAtivaId, setPastaAtivaId] = useState('sicarf');
   const [nomeNovaPasta, setNomeNovaPasta] = useState('');
   const [apiSelecionada, setApiSelecionada] = useState('');
+  const [editandoNome, setEditandoNome] = useState(false);
+  const [nomeEditado, setNomeEditado] = useState('');
+  const [mensagemExportacao, setMensagemExportacao] = useState('');
 
   useEffect(() => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(pastas)); } catch { /* armazenamento indisponível */ }
@@ -55,6 +58,38 @@ export const ProjectsWorkspaceView: React.FC<ProjectsWorkspaceViewProps> = ({ ap
   };
 
   const removerEtapa = (etapaId: string) => atualizarPasta((pasta) => ({ ...pasta, etapas: pasta.etapas.filter((etapa) => etapa.id !== etapaId) }));
+  const atualizarEtapa = (etapaId: string, observacao: string) => atualizarPasta((pasta) => ({
+    ...pasta,
+    etapas: pasta.etapas.map((etapa) => etapa.id === etapaId ? { ...etapa, observacao } : etapa),
+  }));
+  const salvarNome = (event: React.FormEvent) => {
+    event.preventDefault();
+    const nome = nomeEditado.trim();
+    if (!nome || !pastaAtiva || pastas.some((pasta) => pasta.id !== pastaAtiva.id && pasta.nome.toLocaleLowerCase() === nome.toLocaleLowerCase())) return;
+    atualizarPasta((pasta) => ({ ...pasta, nome }));
+    setEditandoNome(false);
+  };
+  const copiarResumo = async () => {
+    if (!pastaAtiva) return;
+    const linhas = [
+      `# ${pastaAtiva.nome}`,
+      '',
+      '## Etapas',
+      ...(pastaAtiva.etapas.length ? pastaAtiva.etapas.map((etapa, index) => {
+        const api = apisMap.get(etapa.apiId);
+        return `${index + 1}. ${api?.nome ?? 'API removida'}${etapa.observacao?.trim() ? `\n   - Observação: ${etapa.observacao.trim()}` : ''}`;
+      }) : ['Nenhuma API vinculada.']),
+      '',
+      '## Anotações',
+      pastaAtiva.observacoes.trim() || 'Sem anotações.',
+    ];
+    try {
+      await navigator.clipboard.writeText(linhas.join('\n'));
+      setMensagemExportacao('Resumo copiado.');
+    } catch {
+      setMensagemExportacao('Não foi possível copiar o resumo neste navegador.');
+    }
+  };
   const moverEtapa = (index: number, direcao: -1 | 1) => atualizarPasta((pasta) => {
     const destino = index + direcao;
     if (destino < 0 || destino >= pasta.etapas.length) return pasta;
@@ -81,7 +116,10 @@ export const ProjectsWorkspaceView: React.FC<ProjectsWorkspaceViewProps> = ({ ap
 
         <div className="grid gap-5 lg:grid-cols-[250px_minmax(0,1fr)]">
           <aside aria-label="Pastas de projetos" className="h-fit rounded-2xl border border-border-default bg-surface p-3">
-            <p className="px-2 pb-2 pt-1 text-xs font-semibold uppercase tracking-wide text-text-muted">Minhas pastas <span className="ml-1 tabular-nums">{pastas.length}</span></p>
+            <div className="flex items-center justify-between px-2 pb-2 pt-1">
+              <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">Minhas pastas</p>
+              <span aria-label={`${pastas.length} pastas`} className="inline-flex min-w-6 items-center justify-center rounded-full bg-bg-page px-2 py-0.5 text-xs font-semibold tabular-nums text-text-secondary">{pastas.length}</span>
+            </div>
             <nav className="flex gap-1 overflow-x-auto lg:flex-col">
               {pastas.map((pasta) => (
                 <button key={pasta.id} type="button" onClick={() => setPastaAtivaId(pasta.id)} aria-current={pastaAtivaId === pasta.id ? 'page' : undefined} className={`flex min-h-11 shrink-0 items-center gap-2 rounded-xl px-3 text-left text-sm font-semibold transition-colors lg:w-full ${pastaAtivaId === pasta.id ? 'bg-primary-light text-primary-text' : 'text-text-secondary hover:bg-surface-hover'}`}>
@@ -94,8 +132,24 @@ export const ProjectsWorkspaceView: React.FC<ProjectsWorkspaceViewProps> = ({ ap
           {pastaAtiva ? (
             <section className="space-y-5 rounded-2xl border border-border-default bg-surface p-5 sm:p-7" aria-labelledby="pasta-title">
               <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border-subtle pb-5">
-                <div><p className="text-xs font-semibold uppercase tracking-wide text-primary-text">Pasta do projeto</p><h2 id="pasta-title" className="mt-1 text-2xl font-bold text-main">{pastaAtiva.nome}</h2><p className="mt-1 text-sm text-text-muted">{pastaAtiva.etapas.length} {pastaAtiva.etapas.length === 1 ? 'API vinculada' : 'APIs vinculadas'}</p></div>
-                {pastas.length > 1 && <button type="button" onClick={() => { const restante = pastas.filter((pasta) => pasta.id !== pastaAtiva.id); setPastas(restante); setPastaAtivaId(restante[0].id); }} className="inline-flex min-h-10 items-center gap-2 rounded-lg px-3 text-xs font-semibold text-text-muted hover:bg-danger-bg hover:text-danger-text"><Trash2 className="size-4" /> Excluir pasta</button>}
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-primary-text">Pasta do projeto</p>
+                  {editandoNome ? (
+                    <form onSubmit={salvarNome} className="mt-2 flex max-w-lg gap-2">
+                      <label className="sr-only" htmlFor="renomear-pasta">Novo nome da pasta</label>
+                      <input id="renomear-pasta" autoFocus value={nomeEditado} onChange={(event) => setNomeEditado(event.target.value)} className="min-h-10 min-w-0 flex-1 rounded-lg border border-border-default bg-bg-page px-3 text-sm text-main focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary" />
+                      <button type="submit" className="min-h-10 rounded-lg bg-primary px-3 text-xs font-semibold text-primary-fg">Salvar</button>
+                      <button type="button" onClick={() => setEditandoNome(false)} className="min-h-10 rounded-lg px-3 text-xs font-semibold text-text-muted hover:bg-surface-hover">Cancelar</button>
+                    </form>
+                  ) : <h2 id="pasta-title" className="mt-1 text-2xl font-bold text-main">{pastaAtiva.nome}</h2>}
+                  <p className="mt-1 text-sm text-text-muted">{pastaAtiva.etapas.length} {pastaAtiva.etapas.length === 1 ? 'API vinculada' : 'APIs vinculadas'}</p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button type="button" onClick={() => { setNomeEditado(pastaAtiva.nome); setEditandoNome(true); }} className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-border-default px-3 text-xs font-semibold text-text-secondary hover:bg-surface-hover"><Pencil className="size-4" /> Renomear</button>
+                  <button type="button" onClick={() => { const restante = pastas.filter((pasta) => pasta.id !== pastaAtiva.id); setPastas(restante); setPastaAtivaId(restante[0]?.id ?? ''); setEditandoNome(false); }} className="inline-flex min-h-10 items-center gap-2 rounded-lg px-3 text-xs font-semibold text-text-muted hover:bg-danger-bg hover:text-danger-text"><Trash2 className="size-4" /> Excluir pasta</button>
+                  <button type="button" onClick={copiarResumo} className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-border-default px-3 text-xs font-semibold text-text-secondary hover:bg-surface-hover"><ClipboardCopy className="size-4" /> Copiar resumo</button>
+                </div>
+                {mensagemExportacao && <p aria-live="polite" className="w-full text-right text-xs text-text-muted">{mensagemExportacao}</p>}
               </div>
 
               <section aria-labelledby="etapas-title" className="space-y-4">
@@ -112,9 +166,13 @@ export const ProjectsWorkspaceView: React.FC<ProjectsWorkspaceViewProps> = ({ ap
                   {pastaAtiva.etapas.map((etapa, index) => {
                     const api = apisMap.get(etapa.apiId);
                     if (!api) return null;
-                    return <li key={etapa.id} className="flex items-center gap-3 rounded-xl border border-border-default bg-bg-page p-3 sm:p-4">
-                      <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary-light text-sm font-bold text-primary-text tabular-nums">{index + 1}</span>
-                      <button type="button" onClick={() => onSelectApi(api.id)} className="min-w-0 flex-1 text-left"><span className="block truncate text-sm font-bold text-main hover:text-primary-text">Etapa {index + 1}: {api.nome}</span><span className="mt-0.5 block truncate text-xs text-text-muted">{api.orgao} · {api.descricaoSimples}</span></button>
+                    return <li key={etapa.id} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3 rounded-xl border border-border-default bg-bg-page p-3 sm:p-4">
+                      <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary-light text-sm font-bold text-primary-text tabular-nums">{index + 1}</span>
+                      <div className="min-w-0">
+                        <button type="button" onClick={() => onSelectApi(api.id)} className="block max-w-full text-left"><span className="block truncate text-sm font-bold text-main hover:text-primary-text">Etapa {index + 1}: {api.nome}</span><span className="mt-0.5 block truncate text-xs text-text-muted">{api.orgao} · {api.descricaoSimples}</span></button>
+                        <label htmlFor={`observacao-etapa-${etapa.id}`} className="sr-only">Observação da etapa {index + 1} para {api.nome}</label>
+                        <input id={`observacao-etapa-${etapa.id}`} value={etapa.observacao ?? ''} onChange={(event) => atualizarEtapa(etapa.id, event.target.value)} placeholder="Observação opcional sobre o papel desta API" className="mt-2 min-h-9 w-full rounded-lg border border-border-default bg-surface px-2.5 text-xs text-main placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary" />
+                      </div>
                       <div className="flex shrink-0 items-center gap-1"><button type="button" onClick={() => moverEtapa(index, -1)} disabled={index === 0} aria-label={`Mover ${api.nome} para cima`} className="size-9 rounded-lg text-text-muted hover:bg-surface-hover disabled:opacity-30">↑</button><button type="button" onClick={() => moverEtapa(index, 1)} disabled={index === pastaAtiva.etapas.length - 1} aria-label={`Mover ${api.nome} para baixo`} className="size-9 rounded-lg text-text-muted hover:bg-surface-hover disabled:opacity-30">↓</button><button type="button" onClick={() => removerEtapa(etapa.id)} aria-label={`Remover ${api.nome} da pasta`} className="size-9 rounded-lg text-text-muted hover:bg-danger-bg hover:text-danger-text"><X className="mx-auto size-4" /></button></div>
                     </li>;
                   })}
@@ -127,7 +185,13 @@ export const ProjectsWorkspaceView: React.FC<ProjectsWorkspaceViewProps> = ({ ap
                 <textarea id="notas-pasta" value={pastaAtiva.observacoes} onChange={(event) => atualizarPasta((pasta) => ({ ...pasta, observacoes: event.target.value }))} placeholder="Registre lembretes, observações ou detalhes desta integração..." rows={5} className="w-full resize-y rounded-xl border border-border-default bg-surface p-3 text-sm leading-relaxed text-main outline-none placeholder:text-text-muted focus-visible:ring-2 focus-visible:ring-primary" />
               </section>
             </section>
-          ) : null}
+          ) : (
+            <section className="flex min-h-64 flex-col items-center justify-center rounded-2xl border border-dashed border-border-default bg-surface p-8 text-center">
+              <FolderPlus className="size-8 text-primary-text" aria-hidden="true" />
+              <h2 className="mt-3 text-lg font-bold text-main">Crie sua primeira pasta</h2>
+              <p className="mt-1 max-w-sm text-sm text-text-muted">Use o campo “Nome da pasta” acima para começar a organizar suas integrações.</p>
+            </section>
+          )}
         </div>
       </div>
     </div>

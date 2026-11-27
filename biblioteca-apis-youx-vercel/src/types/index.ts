@@ -8,7 +8,7 @@ export interface UserProfile {
   id: string;
   name: string;
   email: string;
-  role: 'Product Owner' | 'Tech Lead' | 'Desenvolvedor' | 'Arquiteto de Soluções';
+  role: 'Usuário' | 'Administrador';
   cargoDetalhado: string;
   avatarInitials: string;
   department: string;
@@ -138,18 +138,6 @@ export interface ApiAuditRecord {
   de: string;
   para: string;
   textoFormatado: string;
-}
-
-export interface AppNotification {
-  id: string;
-  apiId: string;
-  apiNome: string;
-  projetoId: string;
-  tipo: 'mencao' | 'alteracao' | 'risco';
-  titulo: string;
-  descricao: string;
-  tempo: string;
-  lida: boolean;
 }
 
 export interface Projeto {

@@ -52,8 +52,8 @@ export const ApiDetailView: React.FC<ApiDetailViewProps> = ({
   const [copiedProd, setCopiedProd] = useState(false);
 
   // State for new Macete form
-  const [novoAutor, setNovoAutor] = useState('Tainara Souza');
-  const [novoCargo, setNovoCargo] = useState('Product Owner YouX');
+  const [novoAutor, setNovoAutor] = useState('Equipe YouX');
+  const [novoCargo, setNovoCargo] = useState('Perfil de acesso');
   const [novoConteudo, setNovoConteudo] = useState('');
   const [maceteSucesso, setMaceteSucesso] = useState(false);
 
