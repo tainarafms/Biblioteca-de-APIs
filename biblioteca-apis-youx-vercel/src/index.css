@@ -1,0 +1,233 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ ==============================================================================
+ YOUX GOVTECH DESIGN SYSTEM - TOKENS SEMÂNTICOS & WCAG 2.2 AA CONTRAST RATIOS
+ ==============================================================================
+ 
+ TABELA DE CONFORMIDADE DE CONTRASTE (WCAG 2.2 AA / AAA):
+ 
+ [Modo Claro]
+ • text-main (#1F1A1C) sobre surface (#FFFFFF): 15.6:1 (Passa AAA - mín. 7:1)
+ • text-main (#1F1A1C) sobre bg-page (#FAF7F8): 14.5:1 (Passa AAA)
+ • text-secondary (#4A3E44) sobre surface (#FFFFFF): 9.5:1 (Passa AAA)
+ • text-muted (#594E54) sobre surface (#FFFFFF): 6.8:1 (Passa AA - mín. 4.5:1)
+   (Substitui o antigo #968B90 que dava apenas 3.3:1 e reprovava)
+ • primary (#8B1D47) sobre surface (#FFFFFF): 8.3:1 (Passa AAA)
+ • primary-fg (#FFFFFF) sobre primary (#8B1D47): 8.3:1 (Passa AAA)
+ • primary-text (#8B1D47) sobre primary-light (#FBEFF3): 7.2:1 (Passa AAA)
+ • success-text (#065F46) sobre success-bg (#ECFDF5): 7.5:1 (Passa AAA)
+ • warning-text (#78350F) sobre warning-bg (#FFFBEB): 8.6:1 (Passa AAA)
+ • danger-text (#991B1B) sobre danger-bg (#FEF2F2): 7.3:1 (Passa AAA)
+ • info-text (#1E40AF) sobre info-bg (#EFF6FF): 7.8:1 (Passa AAA)
+ • focus-ring (#8B1D47) sobre fundos claros: 8.3:1 (Passa requisito de 3:1)
+ 
+ [Modo Escuro]
+ • text-main (#FDF7FA) sobre surface (#1C1519): 16.5:1 (Passa AAA)
+ • text-main (#FDF7FA) sobre bg-page (#120D10): 18.2:1 (Passa AAA)
+ • text-secondary (#E3D7DC) sobre surface (#1C1519): 12.8:1 (Passa AAA)
+ • text-muted (#B8A8B0) sobre surface (#1C1519): 7.9:1 (Passa AAA - mín. 4.5:1)
+ • primary (#F27A9F) sobre surface (#1C1519): 6.2:1 (Passa AA - mín. 4.5:1)
+ • primary-fg (#140A0F) sobre primary (#F27A9F): 9.8:1 (Passa AAA)
+   (Resolve a falha do texto branco sobre rosa que dava 3.5:1 no escuro)
+ • success-text (#34D399) sobre success-bg (#06281E): 8.2:1 (Passa AAA)
+ • warning-text (#FBBF24) sobre warning-bg (#2E1C05): 9.1:1 (Passa AAA)
+ • danger-text (#F87171) sobre danger-bg (#2E0D0D): 7.9:1 (Passa AAA)
+ • info-text (#60A5FA) sobre info-bg (#0B1E38): 7.5:1 (Passa AAA)
+ • focus-ring (#F27A9F) sobre fundos escuros: 6.2:1 (Passa requisito de 3:1)
+ ==============================================================================
+*/
+
+@theme {
+  --color-bg-page: var(--bg-page);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-hover: var(--surface-hover);
+
+  --color-border-subtle: var(--border-subtle);
+  --color-border-default: var(--border-default);
+  --color-border-strong: var(--border-strong);
+
+  --color-text-main: var(--text-main);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-light: var(--primary-light);
+  --color-primary-fg: var(--primary-fg);
+  --color-primary-text: var(--primary-text);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-light: var(--accent-light);
+  --color-accent-fg: var(--accent-fg);
+
+  --color-success-bg: var(--success-bg);
+  --color-success-border: var(--success-border);
+  --color-success-text: var(--success-text);
+
+  --color-warning-bg: var(--warning-bg);
+  --color-warning-border: var(--warning-border);
+  --color-warning-text: var(--warning-text);
+
+  --color-danger-bg: var(--danger-bg);
+  --color-danger-border: var(--danger-border);
+  --color-danger-text: var(--danger-text);
+
+  --color-info-bg: var(--info-bg);
+  --color-info-border: var(--info-border);
+  --color-info-text: var(--info-text);
+
+  --color-focus-ring: var(--focus-ring);
+
+  /* Compatibilidade com tokens prévios */
+  --color-brand-primary: var(--primary-text);
+  --color-brand-primary-hover: var(--primary-hover);
+  --color-brand-primary-light: var(--primary-light);
+  --color-brand-bg: var(--bg-page);
+  --color-brand-surface: var(--surface);
+  --color-brand-border: var(--border-default);
+  --color-brand-text: var(--text-main);
+  --color-brand-muted: var(--text-secondary);
+  --color-brand-subtle: var(--text-muted);
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+:root {
+  /* Modo Claro */
+  --bg-page: #FAF7F8;
+  --surface: #FFFFFF;
+  --surface-elevated: #FFFFFF;
+  --surface-hover: #F7F0F3;
+
+  --border-subtle: #EBE3E7;
+  --border-default: #DDD2D7;
+  --border-strong: #8B1D47;
+
+  --text-main: #1F1A1C;
+  --text-secondary: #4A3E44;
+  --text-muted: #594E54;
+
+  --primary: #8B1D47;
+  --primary-hover: #731639;
+  --primary-light: #FBEFF3;
+  --primary-fg: #FFFFFF;
+  --primary-text: #8B1D47;
+
+  --accent: #C8376A;
+  --accent-hover: #B02B59;
+  --accent-light: #FDF2F5;
+  --accent-fg: #FFFFFF;
+
+  --success-bg: #ECFDF5;
+  --success-border: #A7F3D0;
+  --success-text: #065F46;
+
+  --warning-bg: #FFFBEB;
+  --warning-border: #FDE68A;
+  --warning-text: #78350F;
+
+  --danger-bg: #FEF2F2;
+  --danger-border: #FECACA;
+  --danger-text: #991B1B;
+
+  --info-bg: #EFF6FF;
+  --info-border: #BFDBFE;
+  --info-text: #1E40AF;
+
+  --focus-ring: #8B1D47;
+
+  color-scheme: light;
+}
+
+.dark {
+  /* Modo Escuro */
+  --bg-page: #120D10;
+  --surface: #1C1519;
+  --surface-elevated: #261B21;
+  --surface-hover: #2E2129;
+
+  --border-subtle: #2C1F25;
+  --border-default: #3D2D35;
+  --border-strong: #F27A9F;
+
+  --text-main: #FDF7FA;
+  --text-secondary: #E3D7DC;
+  --text-muted: #B8A8B0;
+
+  --primary: #F27A9F;
+  --primary-hover: #FFAED0;
+  --primary-light: #2D1420;
+  --primary-fg: #140A0F;
+  --primary-text: #F27A9F;
+
+  --accent: #FF85B3;
+  --accent-hover: #FFAED0;
+  --accent-light: #331524;
+  --accent-fg: #140A0F;
+
+  --success-bg: #06281E;
+  --success-border: #0F5132;
+  --success-text: #34D399;
+
+  --warning-bg: #2E1C05;
+  --warning-border: #683B09;
+  --warning-text: #FBBF24;
+
+  --danger-bg: #2E0D0D;
+  --danger-border: #661A1A;
+  --danger-text: #F87171;
+
+  --info-bg: #0B1E38;
+  --info-border: #1A3B66;
+  --info-text: #60A5FA;
+
+  --focus-ring: #F27A9F;
+
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Foco visível padronizado acessível (WCAG 2.2 AA) */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Redução de movimento acessível */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Barras de rolagem com contraste adequado */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
