@@ -2,6 +2,7 @@ import React from 'react';
 import { 
   BookOpen, 
   FolderKanban, 
+  FileText,
   Star,
   LogOut,
   PanelLeftClose,
@@ -45,6 +46,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
       id: 'projetos',
       label: 'Projetos',
       icon: FolderKanban,
+    },
+    {
+      id: 'documentos',
+      label: 'Gerador de documentos',
+      icon: FileText,
     },
   ];
 

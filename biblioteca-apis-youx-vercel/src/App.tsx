@@ -142,7 +142,8 @@ export default function App() {
   }, [currentUser]);
 
   // Auth Handlers
-  const handleLogin = (user: UserProfile) => {
+  const handleLogin = (user: UserProfile, openAdminView = false) => {
+    setAdminView(openAdminView);
     setCurrentUser(user);
     localStorage.setItem('youx_auth_user', JSON.stringify(user));
   };
