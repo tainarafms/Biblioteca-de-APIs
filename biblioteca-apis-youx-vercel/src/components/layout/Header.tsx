@@ -33,6 +33,8 @@ interface HeaderProps {
   onToggleSidebar?: () => void;
   pendingSuggestionsCount?: number;
   onOpenSuggestionsBank?: () => void;
+  adminView: boolean;
+  onToggleAdminView: () => void;
   referenceDate?: Date;
   onReferenceDateChange?: (dateStr: string | null) => void;
 }
@@ -52,6 +54,8 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleSidebar,
   pendingSuggestionsCount = 0,
   onOpenSuggestionsBank,
+  adminView,
+  onToggleAdminView,
   referenceDate = getReferenceDate(),
   onReferenceDateChange,
 }) => {
@@ -124,7 +128,7 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Right Actions: Notifications, Theme Switch, and User Profile (Target size >= 44x44px) */}
       <div className="flex items-center gap-2 shrink-0">
         {/* Admin Suggestions Bank Quick Access */}
-        {currentUser.isAdmin && onOpenSuggestionsBank && (
+        {adminView && onOpenSuggestionsBank && (
           <button
             type="button"
             onClick={onOpenSuggestionsBank}
@@ -245,8 +249,8 @@ export const Header: React.FC<HeaderProps> = ({
           )}
         </div>
 
-        {/* Discrete Demo Reference Date Selector */}
-        <div className="relative" ref={datePickerRef}>
+        {/* Data de referência da demonstração, visível apenas na visualização administrativa */}
+        {adminView && <div className="relative" ref={datePickerRef}>
           <button
             type="button"
             onClick={() => {
@@ -341,7 +345,17 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </div>
           )}
-        </div>
+        </div>}
+
+        <button
+          type="button"
+          onClick={onToggleAdminView}
+          aria-pressed={adminView}
+          aria-label={`Alternar perfil de visualização. Perfil atual: ${adminView ? 'Administrador' : 'Usuário'}`}
+          className={`min-h-[44px] px-3 rounded-xl border text-xs font-semibold transition-colors ${adminView ? 'bg-primary-light border-primary/30 text-primary-text' : 'bg-surface border-border-default text-text-secondary hover:bg-surface-hover'}`}
+        >
+          {adminView ? 'Administrador' : 'Usuário'}
+        </button>
 
         {/* Theme Toggle Button */}
         <button

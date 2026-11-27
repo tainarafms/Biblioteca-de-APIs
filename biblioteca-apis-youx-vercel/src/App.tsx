@@ -28,7 +28,7 @@ import { Header } from './components/layout/Header';
 import { LoginView } from './components/views/LoginView';
 import { ApiLibraryView } from './components/views/ApiLibraryView';
 import { ApiDetailView } from './components/views/ApiDetailView';
-import { ProjectPlanView } from './components/views/ProjectPlanView';
+import { ProjectsWorkspaceView } from './components/views/ProjectsWorkspaceView';
 import { DocumentGeneratorView } from './components/views/DocumentGeneratorView';
 import { SuggestApiModal } from './components/modals/SuggestApiModal';
 import { AddToProjectModal } from './components/modals/AddToProjectModal';
@@ -53,7 +53,9 @@ export default function App() {
   const [followingApiIds, setFollowingApiIds] = useState<string[]>(['sicar', 'assinatura-gov']);
   const [activeDrawerApiId, setActiveDrawerApiId] = useState<string | null>(null);
 
-  // Navigation tabs: 'biblioteca' | 'favoritas' | 'projetos' | 'documentos'
+  const [adminView, setAdminView] = useState(false);
+
+  // Navegação principal
   const [currentTab, setCurrentTab] = useState<'biblioteca' | 'favoritas' | 'projetos' | 'documentos'>('biblioteca');
   
   // Detail view state: if non-null, displays Tela 2 (Página da API)
@@ -596,7 +598,7 @@ export default function App() {
     }
     if (currentTab === 'biblioteca') return 'Biblioteca de APIs';
     if (currentTab === 'favoritas') return 'APIs Favoritas';
-    if (currentTab === 'projetos') return 'Projetos / Plano de Integrações';
+    if (currentTab === 'projetos') return 'Pastas de projetos';
     if (currentTab === 'documentos') return 'Gerador de Documentos';
     return 'Biblioteca de APIs';
   })();
@@ -665,6 +667,8 @@ export default function App() {
           onToggleSidebar={handleToggleSidebar}
           pendingSuggestionsCount={pendingSuggestionsCount}
           onOpenSuggestionsBank={() => setIsSuggestionsBankOpen(true)}
+          adminView={adminView}
+          onToggleAdminView={() => setAdminView((ativo) => !ativo)}
           referenceDate={referenceDate}
           onReferenceDateChange={handleReferenceDateChange}
         />
@@ -675,7 +679,7 @@ export default function App() {
           tabIndex={-1}
           className={
             currentTab === 'projetos' && !selectedApiId
-              ? 'flex-1 w-full min-w-0 flex flex-col p-0 overflow-hidden outline-none'
+              ? 'flex-1 w-full min-w-0 flex flex-col p-0 outline-none'
               : 'flex-1 p-6 lg:p-8 max-w-7xl w-full mx-auto outline-none'
           }
         >
@@ -703,9 +707,13 @@ export default function App() {
                   isFavorite={favoriteIds.includes(api.id)}
                   onToggleFavorite={() => handleToggleFavorite(api.id)}
                   onBack={handleBackToLibrary}
-                  onOpenAddToProjectModal={(apiItem) => handleOpenAddToProjectModal(apiItem)}
+                  onOpenAddToProjectModal={() => {
+                    setCurrentTab('projetos');
+                    setSelectedApiId(null);
+                  }}
                   onSelectApiById={handleSelectApi}
                   onAddMacete={handleAddMacete}
+                  adminView={adminView}
                 />
               );
             })()
@@ -719,13 +727,14 @@ export default function App() {
                   onToggleFavorite={handleToggleFavorite}
                   onSelectApi={handleSelectApi}
                   onOpenSuggestModal={() => setIsSuggestModalOpen(true)}
-                  onOpenAddToProjectModal={handleOpenAddToProjectModal}
+                  onOpenAddToProjectModal={() => setCurrentTab('projetos')}
                   searchQuery={searchQuery}
                   onSearchChange={setSearchQuery}
                   isFavoritesOnlyView={false}
                   currentUser={currentUser}
-                  onOpenSuggestionsBank={() => setIsSuggestionsBankOpen(true)}
-                  pendingSuggestionsCount={pendingSuggestionsCount}
+                  onOpenSuggestionsBank={adminView ? () => setIsSuggestionsBankOpen(true) : undefined}
+                  pendingSuggestionsCount={adminView ? pendingSuggestionsCount : 0}
+                  adminView={adminView}
                 />
               )}
 
@@ -737,41 +746,21 @@ export default function App() {
                   onToggleFavorite={handleToggleFavorite}
                   onSelectApi={handleSelectApi}
                   onOpenSuggestModal={() => setIsSuggestModalOpen(true)}
-                  onOpenAddToProjectModal={handleOpenAddToProjectModal}
+                  onOpenAddToProjectModal={() => setCurrentTab('projetos')}
                   searchQuery=""
                   onSearchChange={setSearchQuery}
                   isFavoritesOnlyView={true}
                   onNavigateToLibrary={() => setCurrentTab('biblioteca')}
                   currentUser={currentUser}
-                  onOpenSuggestionsBank={() => setIsSuggestionsBankOpen(true)}
-                  pendingSuggestionsCount={pendingSuggestionsCount}
+                  onOpenSuggestionsBank={adminView ? () => setIsSuggestionsBankOpen(true) : undefined}
+                  pendingSuggestionsCount={adminView ? pendingSuggestionsCount : 0}
+                  adminView={adminView}
                 />
               )}
 
               {/* TELA 3: PROJETOS > PLANO DE INTEGRAÇÕES */}
               {currentTab === 'projetos' && (
-                <ProjectPlanView
-                  projeto={currentProjeto}
-                  allProjetos={projetos}
-                  onSelectProjeto={(projId) => setSelectedProjectId(projId)}
-                  onUpdatePlanoItem={handleUpdatePlanoItem}
-                  onOpenAddApiModal={() => handleOpenAddToProjectModal()}
-                  onSelectApiById={(apiId) => {
-                    handleSelectApi(apiId);
-                  }}
-                  currentUser={currentUser}
-                  referenceDate={referenceDate}
-                  comments={comments}
-                  auditLogs={auditLogs}
-                  activeDrawerApiId={activeDrawerApiId}
-                  onOpenDrawer={(apiId) => setActiveDrawerApiId(apiId)}
-                  followingApiIds={followingApiIds}
-                  onToggleFollowApi={handleToggleFollowApi}
-                  onAddComment={handleAddComment}
-                  onEditComment={handleEditComment}
-                  onSaveAsMacete={handleSaveCommentAsMacete}
-                  allCatalogApis={apis}
-                />
+                <ProjectsWorkspaceView apis={apis} onSelectApi={handleSelectApi} />
               )}
 
               {/* TELA 4: GERADOR DE DOCUMENTOS */}

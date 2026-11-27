@@ -29,6 +29,7 @@ interface ApiLibraryViewProps {
   currentUser?: UserProfile;
   onOpenSuggestionsBank?: () => void;
   pendingSuggestionsCount?: number;
+  adminView?: boolean;
 }
 
 export const ApiLibraryView: React.FC<ApiLibraryViewProps> = ({
@@ -45,6 +46,7 @@ export const ApiLibraryView: React.FC<ApiLibraryViewProps> = ({
   currentUser,
   onOpenSuggestionsBank,
   pendingSuggestionsCount = 0,
+  adminView = false,
 }) => {
   const [activeFilter, setActiveFilter] = useState<string>('todos');
   const [onlyConectaGov, setOnlyConectaGov] = useState<boolean>(false);
@@ -332,13 +334,10 @@ export const ApiLibraryView: React.FC<ApiLibraryViewProps> = ({
 
                 {/* Card Footer: Delicate Verification & Actions */}
                 <div className="px-4 sm:px-5 pb-4 pt-2 border-t border-border-subtle flex flex-col gap-2.5">
-                  {/* Verification line */}
-                  <div className="flex items-center gap-1.5 text-xs text-muted truncate">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-success-text shrink-0" aria-hidden="true" />
-                    <span className="truncate tabular-nums">
-                      Verificado em {api.verificadoEm} · {api.verificadoPor.replace(' (PO YouX)', '').replace(' (Tech Lead)', '')}
-                    </span>
-                  </div>
+                  {adminView && <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
+                    <span className="flex items-center gap-1.5 truncate"><CheckCircle2 className="size-3.5 text-success-text" aria-hidden="true" /> Referência {api.verificadoEm}</span>
+                    <span className="rounded-full bg-bg-page px-2 py-0.5">Manutenção: {api.dificuldade}</span>
+                  </div>}
 
                   {/* Actions Row */}
                   <div className="flex items-center justify-between gap-2">
@@ -348,7 +347,7 @@ export const ApiLibraryView: React.FC<ApiLibraryViewProps> = ({
                       className="min-h-[36px] px-2.5 text-xs font-medium text-primary hover:bg-primary-light rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-focus-ring"
                     >
                       <FolderPlus className="w-4 h-4" aria-hidden="true" />
-                      <span>+ Projeto</span>
+                      <span>Ver pastas</span>
                     </button>
 
                     <button
