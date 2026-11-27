@@ -5,6 +5,8 @@ import {
   ArrowRight, 
   CheckCircle2, 
   AlertCircle,
+  BookOpen,
+  ShieldCheck,
   Sun,
   Moon
 } from 'lucide-react';
@@ -12,7 +14,7 @@ import { UserProfile } from '../../types';
 import { MOCK_USERS } from '../../data/mockUsers';
 
 interface LoginViewProps {
-  onLogin: (user: UserProfile) => void;
+  onLogin: (user: UserProfile, adminView?: boolean) => void;
   isDarkMode: boolean;
   onToggleDarkMode: () => void;
 }
@@ -28,15 +30,16 @@ export const LoginView: React.FC<LoginViewProps> = ({
   onToggleDarkMode,
 }) => {
   const [mode, setMode] = useState<'login' | 'signup' | 'forgot'>('login');
-  const [email, setEmail] = useState('tainara.souza@youxgroup.com.br');
-  const [password, setPassword] = useState('govtech2026');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [department, setDepartment] = useState('Squad GovTech');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [activeDemoId, setActiveDemoId] = useState<string>('user-tainara');
+  const demoUser = MOCK_USERS.find((user) => !user.isAdmin) ?? MOCK_USERS[0];
+  const demoAdmin = MOCK_USERS.find((user) => user.isAdmin) ?? MOCK_USERS[0];
 
   // Forgot password flow
   const [forgotEmail, setForgotEmail] = useState('');
@@ -70,7 +73,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
 
       if (foundUser) {
         setIsLoading(false);
-        onLogin(foundUser);
+        onLogin(foundUser, foundUser.isAdmin === true);
       } else {
         const namePart = (mode === 'signup' && name.trim()) 
           ? name.trim() 
@@ -85,8 +88,8 @@ export const LoginView: React.FC<LoginViewProps> = ({
           id: `user-${Date.now()}`,
           name: namePart.charAt(0).toUpperCase() + namePart.slice(1),
           email: email.trim(),
-          role: mode === 'signup' ? 'Desenvolvedor' : 'Product Owner',
-          cargoDetalhado: 'Especialista em Integrações e Setor Público',
+          role: 'Usuário',
+          cargoDetalhado: 'Perfil de acesso padrão',
           avatarInitials: initials,
           department: department || 'Tecnologia do Setor Público'
         };
@@ -97,14 +100,13 @@ export const LoginView: React.FC<LoginViewProps> = ({
     }, 450);
   };
 
-  const handleQuickLogin = (user: UserProfile) => {
-    setActiveDemoId(user.id);
+  const handleQuickLogin = (user: UserProfile, adminView: boolean) => {
     setEmail(user.email);
     setPassword('govtech2026');
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
-      onLogin(user);
+      onLogin(user, adminView);
     }, 350);
   };
 
@@ -272,7 +274,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="Ex.: Lucas Mendes"
+                      placeholder="Ex.: Nome Sobrenome"
                       className="w-full min-h-[48px] px-4 py-3 bg-surface border border-border-default rounded-xl text-base text-main placeholder-muted focus-visible:outline-2 focus-visible:outline-focus-ring transition-all"
                     />
                   </div>
@@ -397,34 +399,25 @@ export const LoginView: React.FC<LoginViewProps> = ({
                 <span className="text-xs text-primary font-bold">1-clique</span>
               </div>
 
-              <div className="grid grid-cols-3 gap-2.5">
-                {MOCK_USERS.map((user) => {
-                  const isSelected = activeDemoId === user.id && email === user.email;
-                  return (
-                    <button
-                      key={user.id}
-                      type="button"
-                      onClick={() => handleQuickLogin(user)}
-                      className={`min-h-[52px] p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-center gap-1 focus-visible:outline-2 focus-visible:outline-focus-ring ${
-                        isSelected
-                          ? 'border-primary bg-primary-light ring-1 ring-primary/40'
-                          : 'border-border-default bg-bg-page hover:bg-surface'
-                      }`}
-                    >
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-6 h-6 rounded-md bg-primary text-primary-fg flex items-center justify-center text-xs font-bold shrink-0">
-                          {user.avatarInitials}
-                        </span>
-                        <span className="text-sm font-bold text-main truncate">
-                          {user.name.split(' ')[0]}
-                        </span>
-                      </div>
-                      <span className="text-xs text-primary font-bold truncate">
-                        {user.role}
-                      </span>
-                    </button>
-                  );
-                })}
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={() => handleQuickLogin(demoUser, false)}
+                  disabled={isLoading}
+                  className="flex min-h-[76px] items-center gap-3 rounded-xl border border-border-default bg-bg-page p-3 text-left transition-colors hover:border-primary/50 hover:bg-surface focus-visible:outline-2 focus-visible:outline-focus-ring disabled:opacity-60"
+                >
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-light text-primary-text"><BookOpen className="size-5" aria-hidden="true" /></span>
+                  <span className="min-w-0"><span className="block text-sm font-bold text-main">Usuário</span><span className="mt-0.5 block text-xs leading-relaxed text-secondary">Biblioteca, pastas e gerador de documentos</span></span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickLogin(demoAdmin, true)}
+                  disabled={isLoading}
+                  className="flex min-h-[76px] items-center gap-3 rounded-xl border border-border-default bg-bg-page p-3 text-left transition-colors hover:border-primary/50 hover:bg-surface focus-visible:outline-2 focus-visible:outline-focus-ring disabled:opacity-60"
+                >
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-light text-primary-text"><ShieldCheck className="size-5" aria-hidden="true" /></span>
+                  <span className="min-w-0"><span className="block text-sm font-bold text-main">Administrador</span><span className="mt-0.5 block text-xs leading-relaxed text-secondary">Sugestões, metadados e controles técnicos</span></span>
+                </button>
               </div>
             </div>
           )}

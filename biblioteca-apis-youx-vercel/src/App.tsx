@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { APIS_MOCK, PROJETOS_MOCK } from './data/mockData';
-import { DEFAULT_USER, MOCK_USERS } from './data/mockUsers';
+import { ADMIN_USER, DEFAULT_USER } from './data/mockUsers';
 import { 
   ApiItem, 
   Projeto, 
@@ -11,14 +11,9 @@ import {
   UserProfile,
   ApiComment,
   ApiAuditRecord,
-  AppNotification,
   ApiSuggestion
 } from './types';
-import { 
-  INITIAL_COMMENTS, 
-  INITIAL_AUDIT_LOGS, 
-  INITIAL_NOTIFICATIONS 
-} from './data/mockCollaboration';
+import { INITIAL_COMMENTS, INITIAL_AUDIT_LOGS } from './data/mockCollaboration';
 import { INITIAL_SUGGESTIONS } from './data/mockSuggestions';
 import { getReferenceDate, setReferenceDate } from './utils/date';
 import { calcularRisco } from './utils/risk';
@@ -28,32 +23,29 @@ import { Header } from './components/layout/Header';
 import { LoginView } from './components/views/LoginView';
 import { ApiLibraryView } from './components/views/ApiLibraryView';
 import { ApiDetailView } from './components/views/ApiDetailView';
-import { ProjectPlanView } from './components/views/ProjectPlanView';
+import { ProjectsWorkspaceView } from './components/views/ProjectsWorkspaceView';
 import { DocumentGeneratorView } from './components/views/DocumentGeneratorView';
 import { SuggestApiModal } from './components/modals/SuggestApiModal';
-import { AddToProjectModal } from './components/modals/AddToProjectModal';
 import { SuggestionsBankModal } from './components/modals/SuggestionsBankModal';
 
 export default function App() {
-  // Authentication State
-  const [currentUser, setCurrentUser] = useState<UserProfile | null>(() => {
+  const [adminView, setAdminView] = useState(() => {
     try {
-      const saved = localStorage.getItem('youx_auth_user');
-      if (saved) return JSON.parse(saved);
+      return localStorage.getItem('youx_profile_mode') === 'admin';
     } catch {
-      // ignore
+      return false;
     }
-    return DEFAULT_USER; // Default authenticated session (Tainara Souza - PO YouX)
   });
 
-  // Collaborative timeline, comments, audits and notifications state
+  // Authentication State
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(() => adminView ? ADMIN_USER : DEFAULT_USER);
+
+  // Collaborative data for API references
   const [comments, setComments] = useState<ApiComment[]>(INITIAL_COMMENTS);
   const [auditLogs, setAuditLogs] = useState<ApiAuditRecord[]>(INITIAL_AUDIT_LOGS);
-  const [notifications, setNotifications] = useState<AppNotification[]>(INITIAL_NOTIFICATIONS);
-  const [followingApiIds, setFollowingApiIds] = useState<string[]>(['sicar', 'assinatura-gov']);
   const [activeDrawerApiId, setActiveDrawerApiId] = useState<string | null>(null);
 
-  // Navigation tabs: 'biblioteca' | 'favoritas' | 'projetos' | 'documentos'
+  // Navegação principal
   const [currentTab, setCurrentTab] = useState<'biblioteca' | 'favoritas' | 'projetos' | 'documentos'>('biblioteca');
   
   // Detail view state: if non-null, displays Tela 2 (Página da API)
@@ -140,19 +132,26 @@ export default function App() {
   }, [currentUser]);
 
   // Auth Handlers
-  const handleLogin = (user: UserProfile) => {
-    setCurrentUser(user);
-    localStorage.setItem('youx_auth_user', JSON.stringify(user));
+  const handleLogin = (user: UserProfile, openAdminView = false) => {
+    setAdminView(openAdminView);
+    localStorage.setItem('youx_profile_mode', openAdminView ? 'admin' : 'user');
+    const activeProfile = openAdminView ? ADMIN_USER : DEFAULT_USER;
+    setCurrentUser(activeProfile);
+    localStorage.setItem('youx_auth_user', JSON.stringify(activeProfile));
   };
 
   const handleLogout = () => {
     setCurrentUser(null);
+    setAdminView(false);
     localStorage.removeItem('youx_auth_user');
+    localStorage.removeItem('youx_profile_mode');
   };
 
-  const handleSwitchUser = (user: UserProfile) => {
-    setCurrentUser(user);
-    localStorage.setItem('youx_auth_user', JSON.stringify(user));
+  const handleToggleAdminView = () => {
+    const nextAdminView = !adminView;
+    setAdminView(nextAdminView);
+    localStorage.setItem('youx_profile_mode', nextAdminView ? 'admin' : 'user');
+    setCurrentUser(nextAdminView ? ADMIN_USER : DEFAULT_USER);
   };
 
   // Toggle favorite handler
@@ -169,8 +168,6 @@ export default function App() {
 
   // Modals state
   const [isSuggestModalOpen, setIsSuggestModalOpen] = useState(false);
-  const [isAddToProjectModalOpen, setIsAddToProjectModalOpen] = useState(false);
-  const [apiForProjectModal, setApiForProjectModal] = useState<ApiItem | null>(null);
 
   // Reactive data with active reference date
   const [referenceDate, setRefDateState] = useState<Date>(() => getReferenceDate());
@@ -208,17 +205,25 @@ export default function App() {
     setSelectedApiId(null);
   };
 
-  // Handler to open Add to Project modal
-  const handleOpenAddToProjectModal = (api?: ApiItem) => {
-    setApiForProjectModal(api || null);
-    setIsAddToProjectModalOpen(true);
-  };
-
   // Banco de Sugestões de APIs (persisted in localStorage)
   const [suggestions, setSuggestions] = useState<ApiSuggestion[]>(() => {
     try {
       const saved = localStorage.getItem('youx_api_suggestions');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const suggestionsSaved = JSON.parse(saved) as ApiSuggestion[];
+        return suggestionsSaved.map((suggestion) => {
+          const isDemoUser = /mariana dias|felipe rocha|rodrigo calheiros/i.test(suggestion.sugeridoPor);
+          const isDemoAdmin = /tainara souza|lucas mendes|camila siqueira|andré matos|bruno fontes/i.test(suggestion.sugeridoPor);
+          if (!isDemoUser && !isDemoAdmin) return suggestion;
+          return {
+            ...suggestion,
+            sugeridoPor: isDemoUser ? 'Usuário' : 'Administrador',
+            sugeridoPorEmail: '',
+            sugeridoPorCargo: isDemoUser ? 'Perfil de acesso padrão' : 'Perfil administrativo',
+            avaliadoPor: suggestion.avaliadoPor ? 'Administrador' : undefined,
+          };
+        });
+      }
     } catch {
       // ignore
     }
@@ -248,19 +253,6 @@ export default function App() {
 
     setSuggestions((prev) => [newSug, ...prev]);
 
-    // Notificação automática para administradores
-    const newNotif: AppNotification = {
-      id: `notif-${Date.now()}`,
-      apiId: newSug.id,
-      apiNome: newSug.nome,
-      projetoId: 'psa-florestal',
-      tipo: 'alteracao',
-      titulo: 'Nova sugestão de API enviada',
-      descricao: `${newSug.sugeridoPor} (${newSug.sugeridoPorCargo}) sugeriu a API "${newSug.nome}" para avaliação.`,
-      tempo: 'Agora',
-      lida: false
-    };
-    setNotifications((prev) => [newNotif, ...prev]);
   };
 
   // Handler de aprovação: Apenas admins podem liberar a API e publicá-la no catálogo
@@ -281,7 +273,7 @@ export default function App() {
       dificuldade: sug.dificuldade,
       dificuldadeMotivo: `Aprovada por curadoria da administração YouX a partir de sugestão de ${sug.sugeridoPor}.`,
       verificadoEm: new Date().toLocaleDateString('pt-BR'),
-      verificadoPor: currentUser ? `${currentUser.name} (${currentUser.role})` : 'Tainara Souza (PO YouX)',
+      verificadoPor: currentUser ? `${currentUser.name} (${currentUser.role})` : 'Equipe YouX',
       visaoGeral: {
         oQueFaz: sug.descricaoSimples,
         dadosEntrada: sug.dadosEntrada ? [sug.dadosEntrada] : ['Identificador cadastral (CPF/CNPJ)'],
@@ -352,19 +344,6 @@ export default function App() {
       )
     );
 
-    // Notificação de publicação
-    const notif: AppNotification = {
-      id: `notif-${Date.now()}`,
-      apiId: newApiId,
-      apiNome: sug.nome,
-      projetoId: 'psa-florestal',
-      tipo: 'alteracao',
-      titulo: 'API Aprovada e Publicada',
-      descricao: `A sugestão "${sug.nome}" foi aprovada por ${currentUser?.name || 'Administrador'} e publicada no catálogo público.`,
-      tempo: 'Agora',
-      lida: false
-    };
-    setNotifications((prev) => [notif, ...prev]);
   };
 
   // Handler de rejeição
@@ -402,7 +381,6 @@ export default function App() {
   // Handler to update a PlanoItem directly in the project (status, sprint, etc.)
   const handleUpdatePlanoItem = (planoId: string, updates: Partial<PlanoItem>) => {
     let affectedApiId = '';
-    let affectedApiNome = '';
     let fieldName = '';
     let oldVal = '';
     let newVal = '';
@@ -415,7 +393,6 @@ export default function App() {
           if (item.id !== planoId) return item;
 
           affectedApiId = item.apiId;
-          affectedApiNome = item.apiNome;
 
           const newItem = { ...item, ...updates };
 
@@ -473,21 +450,6 @@ export default function App() {
       };
       setAuditLogs((prev) => [...prev, auditEntry]);
 
-      // If user follows this API, register notification
-      if (followingApiIds.includes(affectedApiId)) {
-        const notif: AppNotification = {
-          id: `notif-${Date.now()}`,
-          apiId: affectedApiId,
-          apiNome: affectedApiNome,
-          projetoId: selectedProjectId,
-          tipo: 'alteracao',
-          titulo: `Alteração na API seguida: ${affectedApiNome}`,
-          descricao: auditEntry.textoFormatado,
-          tempo: 'Agora mesmo',
-          lida: false,
-        };
-        setNotifications((prev) => [notif, ...prev]);
-      }
     }
   };
 
@@ -508,23 +470,6 @@ export default function App() {
     };
     setComments((prev) => [...prev, newComment]);
 
-    // Push notification if following
-    const targetPlano = currentProjeto?.plano.find((p) => p.apiId === apiId);
-    const apiNome = targetPlano ? targetPlano.apiNome : apiId;
-    if (followingApiIds.includes(apiId) || texto.includes('@')) {
-      const notif: AppNotification = {
-        id: `notif-${Date.now()}`,
-        apiId,
-        apiNome,
-        projetoId: selectedProjectId,
-        tipo: 'mencao',
-        titulo: `Novo comentário em ${apiNome}`,
-        descricao: `${currentUser.name}: "${texto.slice(0, 80)}${texto.length > 80 ? '...' : ''}"`,
-        tempo: 'Agora mesmo',
-        lida: false,
-      };
-      setNotifications((prev) => [notif, ...prev]);
-    }
   };
 
   // Edit Comment Handler
@@ -551,43 +496,6 @@ export default function App() {
     );
   };
 
-  // Toggle follow API
-  const handleToggleFollowApi = (apiId: string) => {
-    setFollowingApiIds((prev) =>
-      prev.includes(apiId) ? prev.filter((id) => id !== apiId) : [...prev, apiId]
-    );
-  };
-
-  // Open Project and API Drawer from Header Notification
-  const handleOpenProjectApiDrawer = (projId: string, apiId: string) => {
-    setSelectedProjectId(projId);
-    setCurrentTab('projetos');
-    setSelectedApiId(null);
-    setActiveDrawerApiId(apiId);
-    setNotifications((prev) =>
-      prev.map((n) => (n.apiId === apiId ? { ...n, lida: true } : n))
-    );
-  };
-
-  // Handler to add a new API to a project's integration plan
-  const handleAddApiToProject = (projetoId: string, novoItem: PlanoItem) => {
-    setProjetos((prevProjetos) =>
-      prevProjetos.map((proj) => {
-        if (proj.id === projetoId) {
-          return {
-            ...proj,
-            plano: [...proj.plano, novoItem],
-          };
-        }
-        return proj;
-      })
-    );
-    // Switch to project view so user sees it right away
-    setCurrentTab('projetos');
-    setSelectedProjectId(projetoId);
-    setSelectedApiId(null);
-  };
-
   // Determine screen header title
   const currentScreenName = (() => {
     if (selectedApiId) {
@@ -596,7 +504,7 @@ export default function App() {
     }
     if (currentTab === 'biblioteca') return 'Biblioteca de APIs';
     if (currentTab === 'favoritas') return 'APIs Favoritas';
-    if (currentTab === 'projetos') return 'Projetos / Plano de Integrações';
+    if (currentTab === 'projetos') return 'Pastas de projetos';
     if (currentTab === 'documentos') return 'Gerador de Documentos';
     return 'Biblioteca de APIs';
   })();
@@ -630,41 +538,23 @@ export default function App() {
         favoritasCount={favoriteIds.length}
         projetosCount={projetos.length}
         riscoCount={riscoCount}
-        currentUser={currentUser}
-        onLogout={handleLogout}
         isCollapsed={isSidebarCollapsed}
-        onToggleCollapse={handleToggleSidebar}
       />
 
       {/* Main View Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header */}
         <Header
-          searchQuery={searchQuery}
-          onSearchChange={(q) => {
-            setSearchQuery(q);
-            if (currentTab !== 'biblioteca' && currentTab !== 'favoritas') {
-              setCurrentTab('biblioteca');
-              setSelectedApiId(null);
-            }
-          }}
           currentScreenName={currentScreenName}
           isDarkMode={isDarkMode}
           onToggleDarkMode={handleToggleDarkMode}
-          currentUser={currentUser}
           onLogout={handleLogout}
-          onSwitchUser={handleSwitchUser}
-          riscoCount={riscoCount}
-          onNavigateToProjects={() => {
-            setCurrentTab('projetos');
-            setSelectedApiId(null);
-          }}
-          notifications={notifications}
-          onOpenProjectApiDrawer={handleOpenProjectApiDrawer}
           isSidebarCollapsed={isSidebarCollapsed}
           onToggleSidebar={handleToggleSidebar}
           pendingSuggestionsCount={pendingSuggestionsCount}
           onOpenSuggestionsBank={() => setIsSuggestionsBankOpen(true)}
+          adminView={adminView}
+          onToggleAdminView={handleToggleAdminView}
           referenceDate={referenceDate}
           onReferenceDateChange={handleReferenceDateChange}
         />
@@ -675,7 +565,7 @@ export default function App() {
           tabIndex={-1}
           className={
             currentTab === 'projetos' && !selectedApiId
-              ? 'flex-1 w-full min-w-0 flex flex-col p-0 overflow-hidden outline-none'
+              ? 'flex-1 w-full min-w-0 flex flex-col p-0 outline-none'
               : 'flex-1 p-6 lg:p-8 max-w-7xl w-full mx-auto outline-none'
           }
         >
@@ -703,9 +593,13 @@ export default function App() {
                   isFavorite={favoriteIds.includes(api.id)}
                   onToggleFavorite={() => handleToggleFavorite(api.id)}
                   onBack={handleBackToLibrary}
-                  onOpenAddToProjectModal={(apiItem) => handleOpenAddToProjectModal(apiItem)}
+                  onOpenAddToProjectModal={() => {
+                    setCurrentTab('projetos');
+                    setSelectedApiId(null);
+                  }}
                   onSelectApiById={handleSelectApi}
                   onAddMacete={handleAddMacete}
+                  adminView={adminView}
                 />
               );
             })()
@@ -719,13 +613,14 @@ export default function App() {
                   onToggleFavorite={handleToggleFavorite}
                   onSelectApi={handleSelectApi}
                   onOpenSuggestModal={() => setIsSuggestModalOpen(true)}
-                  onOpenAddToProjectModal={handleOpenAddToProjectModal}
+                  onOpenAddToProjectModal={() => setCurrentTab('projetos')}
                   searchQuery={searchQuery}
                   onSearchChange={setSearchQuery}
                   isFavoritesOnlyView={false}
                   currentUser={currentUser}
-                  onOpenSuggestionsBank={() => setIsSuggestionsBankOpen(true)}
-                  pendingSuggestionsCount={pendingSuggestionsCount}
+                  onOpenSuggestionsBank={adminView ? () => setIsSuggestionsBankOpen(true) : undefined}
+                  pendingSuggestionsCount={adminView ? pendingSuggestionsCount : 0}
+                  adminView={adminView}
                 />
               )}
 
@@ -737,41 +632,21 @@ export default function App() {
                   onToggleFavorite={handleToggleFavorite}
                   onSelectApi={handleSelectApi}
                   onOpenSuggestModal={() => setIsSuggestModalOpen(true)}
-                  onOpenAddToProjectModal={handleOpenAddToProjectModal}
+                  onOpenAddToProjectModal={() => setCurrentTab('projetos')}
                   searchQuery=""
                   onSearchChange={setSearchQuery}
                   isFavoritesOnlyView={true}
                   onNavigateToLibrary={() => setCurrentTab('biblioteca')}
                   currentUser={currentUser}
-                  onOpenSuggestionsBank={() => setIsSuggestionsBankOpen(true)}
-                  pendingSuggestionsCount={pendingSuggestionsCount}
+                  onOpenSuggestionsBank={adminView ? () => setIsSuggestionsBankOpen(true) : undefined}
+                  pendingSuggestionsCount={adminView ? pendingSuggestionsCount : 0}
+                  adminView={adminView}
                 />
               )}
 
               {/* TELA 3: PROJETOS > PLANO DE INTEGRAÇÕES */}
               {currentTab === 'projetos' && (
-                <ProjectPlanView
-                  projeto={currentProjeto}
-                  allProjetos={projetos}
-                  onSelectProjeto={(projId) => setSelectedProjectId(projId)}
-                  onUpdatePlanoItem={handleUpdatePlanoItem}
-                  onOpenAddApiModal={() => handleOpenAddToProjectModal()}
-                  onSelectApiById={(apiId) => {
-                    handleSelectApi(apiId);
-                  }}
-                  currentUser={currentUser}
-                  referenceDate={referenceDate}
-                  comments={comments}
-                  auditLogs={auditLogs}
-                  activeDrawerApiId={activeDrawerApiId}
-                  onOpenDrawer={(apiId) => setActiveDrawerApiId(apiId)}
-                  followingApiIds={followingApiIds}
-                  onToggleFollowApi={handleToggleFollowApi}
-                  onAddComment={handleAddComment}
-                  onEditComment={handleEditComment}
-                  onSaveAsMacete={handleSaveCommentAsMacete}
-                  allCatalogApis={apis}
-                />
+                <ProjectsWorkspaceView apis={apis} onSelectApi={handleSelectApi} />
               )}
 
               {/* TELA 4: GERADOR DE DOCUMENTOS */}
@@ -807,19 +682,6 @@ export default function App() {
         onSelectApiById={handleSelectApi}
       />
 
-      {/* Add To Project Modal */}
-      <AddToProjectModal
-        isOpen={isAddToProjectModalOpen}
-        onClose={() => {
-          setIsAddToProjectModalOpen(false);
-          setApiForProjectModal(null);
-        }}
-        preselectedApi={apiForProjectModal}
-        allApis={apis}
-        projetos={projetos}
-        referenceDate={referenceDate}
-        onAddApiToProject={handleAddApiToProject}
-      />
     </div>
   );
 }

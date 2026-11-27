@@ -28,7 +28,7 @@ export const AddToProjectModal: React.FC<AddToProjectModalProps> = ({
   const [selectedApiId, setSelectedApiId] = useState(preselectedApi?.id || allApis[0]?.id || '');
   const [sprintId, setSprintId] = useState<number>(3);
   const [funcionalidade, setFuncionalidade] = useState('');
-  const [responsavel, setResponsavel] = useState('Tainara Souza (PO)');
+  const [responsavel, setResponsavel] = useState('Equipe YouX');
   const [status, setStatus] = useState<IntegrationStatus>('Não solicitada');
   const [success, setSuccess] = useState(false);
 

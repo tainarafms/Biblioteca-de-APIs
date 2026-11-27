@@ -2,14 +2,9 @@ import React from 'react';
 import { 
   BookOpen, 
   FolderKanban, 
-  FileText, 
-  Star,
-  LogOut,
-  PanelLeftClose,
-  PanelLeftOpen
+  FileText,
+  Star
 } from 'lucide-react';
-import { UserProfile } from '../../types';
-
 interface SidebarProps {
   currentTab: 'biblioteca' | 'favoritas' | 'projetos' | 'documentos';
   onSelectTab: (tab: 'biblioteca' | 'favoritas' | 'projetos' | 'documentos') => void;
@@ -17,19 +12,13 @@ interface SidebarProps {
   favoritasCount?: number;
   projetosCount?: number;
   riscoCount?: number;
-  currentUser: UserProfile;
-  onLogout: () => void;
   isCollapsed?: boolean;
-  onToggleCollapse?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   currentTab,
   onSelectTab,
-  currentUser,
-  onLogout,
   isCollapsed = false,
-  onToggleCollapse,
 }) => {
   const navItems: { id: 'biblioteca' | 'favoritas' | 'projetos' | 'documentos'; label: string; icon: React.ElementType; badge?: string }[] = [
     {
@@ -78,22 +67,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
         </div>
 
-        {/* Toggle Collapse Button */}
-        {onToggleCollapse && (
-          <button
-            type="button"
-            onClick={onToggleCollapse}
-            title={isCollapsed ? 'Expandir menu lateral' : 'Recolher menu lateral'}
-            aria-label={isCollapsed ? 'Expandir menu lateral' : 'Recolher menu lateral'}
-            className="min-w-[44px] min-h-[44px] rounded-xl flex items-center justify-center text-text-muted hover:text-primary-text hover:bg-surface-hover transition-colors cursor-pointer shrink-0"
-          >
-            {isCollapsed ? (
-              <PanelLeftOpen className="w-5 h-5" aria-hidden="true" />
-            ) : (
-              <PanelLeftClose className="w-5 h-5" aria-hidden="true" />
-            )}
-          </button>
-        )}
       </div>
 
       {/* Main Navigation */}
@@ -152,53 +125,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         })}
       </nav>
 
-      {/* User profile & explicit logout button */}
-      <div className={`border-t border-border-default bg-surface-hover ${isCollapsed ? 'p-2 flex flex-col items-center gap-2' : 'p-3.5'}`}>
-        {isCollapsed ? (
-          <div className="flex flex-col items-center gap-2">
-            <div
-              className="w-9 h-9 rounded-lg bg-primary text-primary-fg flex items-center justify-center font-bold text-xs shadow-xs"
-              title={`${currentUser.name} (${currentUser.role})`}
-            >
-              {currentUser.avatarInitials}
-            </div>
-            <button
-              type="button"
-              onClick={onLogout}
-              title="Sair da conta"
-              aria-label="Sair da conta"
-              className="min-w-[44px] min-h-[44px] flex items-center justify-center text-text-muted hover:text-danger-text hover:bg-danger-bg rounded-xl transition-colors cursor-pointer"
-            >
-              <LogOut className="w-5 h-5" aria-hidden="true" />
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-9 h-9 rounded-lg bg-primary text-primary-fg flex items-center justify-center font-bold text-sm shrink-0 shadow-xs">
-                {currentUser.avatarInitials}
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm font-bold text-main truncate">
-                  {currentUser.name}
-                </p>
-                <p className="text-xs text-text-muted font-medium truncate">
-                  {currentUser.role}
-                </p>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={onLogout}
-              title="Sair da conta"
-              aria-label="Sair da conta"
-              className="min-w-[44px] min-h-[44px] flex items-center justify-center text-text-muted hover:text-danger-text hover:bg-danger-bg rounded-xl transition-colors cursor-pointer shrink-0"
-            >
-              <LogOut className="w-4 h-4" aria-hidden="true" />
-            </button>
-          </div>
-        )}
+      <div className="border-t border-border-default p-3">
+        <p className={`text-xs font-medium text-text-muted ${isCollapsed ? 'sr-only' : ''}`}>Biblioteca de integrações YouX</p>
       </div>
     </aside>
   );

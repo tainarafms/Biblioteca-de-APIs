@@ -800,14 +800,14 @@ export const ApiDrawer: React.FC<ApiDrawerProps> = ({
             </span>
             <button
               type="button"
-              onClick={() => insertMention('Camila Siqueira')}
+              onClick={() => insertMention('Equipe de integração')}
               className="px-2 py-0.5 rounded-md bg-[#FAF7F8] dark:bg-[#251A21] hover:bg-[#8B1D47]/10 hover:text-[#8B1D47] font-semibold transition-colors cursor-pointer"
             >
               @Camila
             </button>
             <button
               type="button"
-              onClick={() => insertMention('Mariana Dias')}
+              onClick={() => insertMention('Equipe técnica')}
               className="px-2 py-0.5 rounded-md bg-[#FAF7F8] dark:bg-[#251A21] hover:bg-[#8B1D47]/10 hover:text-[#8B1D47] font-semibold transition-colors cursor-pointer"
             >
               @Mariana

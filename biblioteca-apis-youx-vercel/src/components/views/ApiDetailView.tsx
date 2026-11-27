@@ -30,6 +30,7 @@ interface ApiDetailViewProps {
   onOpenAddToProjectModal: (api: ApiItem) => void;
   onSelectApiById: (id: string) => void;
   onAddMacete: (apiId: string, macete: Macete) => void;
+  adminView?: boolean;
 }
 
 export const ApiDetailView: React.FC<ApiDetailViewProps> = ({
@@ -41,6 +42,7 @@ export const ApiDetailView: React.FC<ApiDetailViewProps> = ({
   onOpenAddToProjectModal,
   onSelectApiById,
   onAddMacete,
+  adminView = false,
 }) => {
   // Aba 'como-acesso' abre por padrão conforme regra de negócio
   const [activeTab, setActiveTab] = useState<'como-acesso' | 'visao-geral' | 'antes-de-usar' | 'macetes' | 'historico'>('como-acesso');
@@ -50,8 +52,8 @@ export const ApiDetailView: React.FC<ApiDetailViewProps> = ({
   const [copiedProd, setCopiedProd] = useState(false);
 
   // State for new Macete form
-  const [novoAutor, setNovoAutor] = useState('Tainara Souza');
-  const [novoCargo, setNovoCargo] = useState('Product Owner YouX');
+  const [novoAutor, setNovoAutor] = useState('Equipe YouX');
+  const [novoCargo, setNovoCargo] = useState('Perfil de acesso');
   const [novoConteudo, setNovoConteudo] = useState('');
   const [maceteSucesso, setMaceteSucesso] = useState(false);
 
@@ -153,13 +155,13 @@ export const ApiDetailView: React.FC<ApiDetailViewProps> = ({
               {api.descricaoSimples}
             </p>
 
-            {/* Discreet Verification Note */}
-            <div className="pt-1 flex items-center gap-1.5 text-xs text-muted">
-              <ShieldCheck className="w-4 h-4 text-success-text shrink-0" aria-hidden="true" />
-              <span>
-                Verificado em <strong className="font-semibold text-main tabular-nums">{api.verificadoEm}</strong> por {api.verificadoPor}
-              </span>
-            </div>
+            {adminView && (
+              <div className="rounded-xl border border-border-default bg-bg-page p-3 text-xs text-secondary">
+                <p className="flex items-center gap-1.5 font-semibold text-main"><ShieldCheck className="size-4 text-success-text" /> Metadados de curadoria</p>
+                <p className="mt-1">Referência: {api.verificadoEm} · responsável: {api.verificadoPor}</p>
+                <p className="mt-1">Manutenção: {api.dificuldade} · {api.dificuldadeMotivo}</p>
+              </div>
+            )}
           </div>
 
           {/* Clean Action Cluster */}
@@ -171,7 +173,7 @@ export const ApiDetailView: React.FC<ApiDetailViewProps> = ({
               className="min-h-[44px] px-4 py-2 bg-primary hover:bg-primary-hover text-primary-fg text-xs font-semibold rounded-lg shadow-2xs transition-all flex items-center justify-center gap-1.5 cursor-pointer focus-visible:outline-2 focus-visible:outline-focus-ring"
             >
               <Plus className="w-4 h-4" aria-hidden="true" />
-              <span>Adicionar ao projeto</span>
+              <span>Organizar em pasta</span>
             </button>
 
             {/* Favorite Button */}
@@ -274,7 +276,7 @@ export const ApiDetailView: React.FC<ApiDetailViewProps> = ({
             </span>
           </button>
 
-          <button
+          {adminView && <button
             type="button"
             role="tab"
             aria-selected={activeTab === 'historico'}
@@ -286,8 +288,8 @@ export const ApiDetailView: React.FC<ApiDetailViewProps> = ({
             }`}
           >
             <Calendar className="w-4 h-4" aria-hidden="true" />
-            <span>Histórico</span>
-          </button>
+            <span>Histórico de manutenção</span>
+          </button>}
         </div>
       </section>
 
@@ -708,7 +710,7 @@ export const ApiDetailView: React.FC<ApiDetailViewProps> = ({
       )}
 
       {/* Tab 5: Histórico */}
-      {activeTab === 'historico' && (
+      {adminView && activeTab === 'historico' && (
         <section className="bg-surface rounded-xl p-5 sm:p-6 border border-border-default space-y-4 shadow-2xs">
           <h2 className="text-sm font-bold text-main">
             Histórico de verificação e atualizações normativas
